@@ -1,8 +1,7 @@
 // src/components/UserSelector.jsx
 //
 // Dropdown that lets you pick "who you are" since real login
-// was intentionally left out. The selected user's UserId is
-// used as createdBy/assignedTo/userId in API calls.
+// was intentionally left out. Shows avatar initial + role badge.
 
 import { useUser } from '../context/UserContext';
 
@@ -16,13 +15,24 @@ export default function UserSelector() {
         if (user) selectUser(user);
     }
 
+    const initial = currentUser.Name?.charAt(0)?.toUpperCase() || '?';
+
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '0.85rem', color: '#6b7280' }}>Current User:</label>
-            <select value={currentUser.UserId} onChange={handleChange}>
+        <div className="user-selector">
+            <div className="user-avatar">{initial}</div>
+            <div className="user-info">
+                <span className="user-name">{currentUser.Name}</span>
+                <span className="user-role">{currentUser.Role || currentUser.Department}</span>
+            </div>
+            <select
+                className="user-select"
+                value={currentUser.UserId}
+                onChange={handleChange}
+                id="user-selector-dropdown"
+            >
                 {users.map((u) => (
                     <option key={u.UserId} value={u.UserId}>
-                        {u.Name} - {u.Department}
+                        {u.Name} — {u.Role || u.Department}
                     </option>
                 ))}
             </select>

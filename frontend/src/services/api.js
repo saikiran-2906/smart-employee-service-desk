@@ -21,6 +21,9 @@ export const addComment = (id, data) => api.post(`/tickets/${id}/comments`, data
 // ---- Lookups ----
 export const getCategories = () => api.get('/categories');
 export const getUsers = () => api.get('/users');
+export const getSupportUsers = (categoryId) =>
+    api.get('/users/support', { params: categoryId ? { categoryId } : {} });
+export const getUserById = (id) => api.get(`/users/${id}`);
 
 // ---- Dashboard ----
 export const getDashboard = () => api.get('/dashboard');

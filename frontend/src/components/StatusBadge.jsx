@@ -1,31 +1,19 @@
 // src/components/StatusBadge.jsx
 //
-// Small colored label for ticket status.
-// Usage: <StatusBadge status="In Progress" />
-
-const COLORS = {
-    Open: { bg: '#e0f2fe', text: '#075985' },
-    Assigned: { bg: '#ede9fe', text: '#5b21b6' },
-    'In Progress': { bg: '#fef3c7', text: '#92400e' },
-    Resolved: { bg: '#dcfce7', text: '#166534' },
-    Closed: { bg: '#e5e7eb', text: '#374151' }
-};
+// Colored badge for ticket status.
 
 export default function StatusBadge({ status }) {
-    const colors = COLORS[status] || { bg: '#e5e7eb', text: '#374151' };
+    const classMap = {
+        'Open': 'badge badge-open',
+        'Assigned': 'badge badge-assigned',
+        'In Progress': 'badge badge-in-progress',
+        'Resolved': 'badge badge-resolved',
+        'Closed': 'badge badge-closed'
+    };
 
     return (
-        <span
-            style={{
-                backgroundColor: colors.bg,
-                color: colors.text,
-                padding: '2px 10px',
-                borderRadius: '999px',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                display: 'inline-block'
-            }}
-        >
+        <span className={classMap[status] || 'badge'}>
+            <span className="badge-dot" />
             {status}
         </span>
     );

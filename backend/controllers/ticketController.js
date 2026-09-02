@@ -4,6 +4,7 @@
 // here (close to the request); actual SQL lives in ticketService.
 
 const ticketService = require('../services/ticketService');
+const { pool } = require('../config/db');
 
 const VALID_PRIORITIES = ['High', 'Medium', 'Low'];
 const VALID_STATUSES = ['Open', 'Assigned', 'In Progress', 'Resolved', 'Closed'];
@@ -40,11 +41,11 @@ exports.createTicket = async (req, res, next) => {
     }
 };
 
-// GET /api/tickets?status=&priority=&categoryId=
+// GET /api/tickets?status=&priority=&categoryId=&assignedTo=
 exports.getAllTickets = async (req, res, next) => {
     try {
-        const { status, priority, categoryId } = req.query;
-        const tickets = await ticketService.getAllTickets({ status, priority, categoryId });
+        const { status, priority, categoryId, assignedTo } = req.query;
+        const tickets = await ticketService.getAllTickets({ status, priority, categoryId, assignedTo });
         res.status(200).json(tickets);
     } catch (err) {
         next(err);
@@ -68,24 +69,50 @@ exports.getTicketById = async (req, res, next) => {
 exports.updateTicket = async (req, res, next) => {
     try {
         const existing = await ticketService.getTicketById(req.params.id);
+
         if (!existing) {
             return res.status(404).json({ message: 'Ticket not found' });
         }
+
         if (existing.Status === 'Closed') {
             return res.status(400).json({ message: 'Cannot modify a closed ticket' });
         }
 
         const { priority, status, assignedTo } = req.body;
 
-        if (priority && !VALID_PRIORITIES.includes(priority)) {
-            return res.status(400).json({ message: 'Priority must be High, Medium, or Low' });
-        }
-        if (status && !VALID_STATUSES.includes(status)) {
-            return res.status(400).json({ message: 'Invalid status value' });
+        // Verify assigned person is a Support user
+        if (assignedTo) {
+            const [userRows] = await pool.query(
+                'SELECT * FROM Users WHERE UserId = ? AND Role = ?',
+                [assignedTo, 'Support']
+            );
+
+            if (userRows.length === 0) {
+                return res.status(400).json({
+                    message: 'Tickets can only be assigned to support staff'
+                });
+            }
         }
 
-        const updated = await ticketService.updateTicket(req.params.id, { priority, status, assignedTo });
+        if (priority && !VALID_PRIORITIES.includes(priority)) {
+            return res.status(400).json({
+                message: 'Priority must be High, Medium, or Low'
+            });
+        }
+
+        if (status && !VALID_STATUSES.includes(status)) {
+            return res.status(400).json({
+                message: 'Invalid status value'
+            });
+        }
+
+        const updated = await ticketService.updateTicket(
+            req.params.id,
+            { priority, status, assignedTo }
+        );
+
         res.status(200).json(updated);
+
     } catch (err) {
         next(err);
     }

@@ -23,6 +23,7 @@ async function createTicket({ title, description, categoryId, priority, createdB
 async function getAllTickets(filters) {
     let query = `
         SELECT t.TicketId, t.Title, t.Priority, t.Status, t.CreatedDate, t.UpdatedDate,
+               t.CreatedBy, t.AssignedTo,
                c.CategoryId, c.Name AS CategoryName,
                creator.Name AS CreatedByName,
                assignee.Name AS AssignedToName
@@ -45,6 +46,10 @@ async function getAllTickets(filters) {
     if (filters.categoryId) {
         query += ' AND t.CategoryId = ?';
         params.push(filters.categoryId);
+    }
+    if (filters.assignedTo) {
+        query += ' AND t.AssignedTo = ?';
+        params.push(filters.assignedTo);
     }
 
     query += ' ORDER BY t.CreatedDate DESC';

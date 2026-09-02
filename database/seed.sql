@@ -98,3 +98,14 @@ INSERT INTO Comments (TicketId, UserId, Notes, CreatedDate) VALUES
     (1, 1, 'Still happening as of this morning, tried restarting the router too.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
     (5, 5, 'Technician replaced the compressor capacitor. AC now cooling normally.', DATE_SUB(NOW(), INTERVAL 8 DAY)),
     (7, 2, 'Password reset and MFA re-registered. Please confirm you can log in.', DATE_SUB(NOW(), INTERVAL 3 DAY));
+
+INSERT INTO Users (Name, Email, Department, Role, CategoryId) VALUES
+  ('Kiran',  'kiran@company.com',  'Engineering',      'Employee', NULL),
+  ('Meera',  'meera@company.com',  'Marketing',         'Employee', NULL),
+  ('Rahul',  'rahul@company.com',  'IT Support',        'Support',  1),
+  ('Deepak', 'deepak@company.com', 'IT Support',        'Support',  1),
+  ('Priya',  'priya@company.com',  'HR Support',        'Support',  2),
+  ('Sneha',  'sneha@company.com',  'Facilities Support','Support',  3),
+  ('Arun',   'arun@company.com',   'Finance Support',   'Support',  4),
+  ('Vikram', 'vikram@company.com', 'Access Mgmt Support','Support', 5),
+  ('Admin',  'admin@company.com',  'Administration',    'Admin',    NULL);
