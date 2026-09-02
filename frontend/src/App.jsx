@@ -1,21 +1,35 @@
-// src/App.jsx
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Dashboard from './pages/Dashboard';
-import TicketForm from './pages/TicketForm';
-import TicketResults from './pages/TicketResults';
-import TicketDetails from './pages/TicketDetails';
+import React from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ToastProvider } from './components/Toast';
+import { CurrentUserProvider, useCurrentUser } from './context/CurrentUserContext';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import TicketsPage from './pages/TicketsPage';
+import NewTicketPage from './pages/NewTicketPage';
+import TicketDetailPage from './pages/TicketDetailPage';
+
+// Redirects to the identity picker until a user has "signed in".
+function RequireUser({ children }) {
+  const { user } = useCurrentUser();
+  const location = useLocation();
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  return children;
+}
 
 export default function App() {
-    return (
-        <div>
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/create" element={<TicketForm />} />
-                <Route path="/tickets" element={<TicketResults />} />
-                <Route path="/tickets/:id" element={<TicketDetails />} />
-            </Routes>
-        </div>
-    );
+  return (
+    <CurrentUserProvider>
+      <ToastProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<RequireUser><DashboardPage /></RequireUser>} />
+          <Route path="/tickets" element={<RequireUser><TicketsPage /></RequireUser>} />
+          <Route path="/tickets/new" element={<RequireUser><NewTicketPage /></RequireUser>} />
+          <Route path="/tickets/:id" element={<RequireUser><TicketDetailPage /></RequireUser>} />
+        </Routes>
+      </ToastProvider>
+    </CurrentUserProvider>
+  );
 }

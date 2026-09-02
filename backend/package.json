@@ -1,23 +1,37 @@
 {
-  "name": "smart-employee-service-desk-backend",
+  "name": "service-desk-backend",
   "version": "1.0.0",
-  "description": "Backend REST API for the Smart Employee Service Desk & Ticket Management Portal",
-  "main": "server.js",
+  "description": "Smart Employee Service Desk & Ticket Management Portal - Express/MySQL REST API",
+  "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:init": "node src/scripts/initDb.js",
+    "db:seed": "node src/scripts/seed.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand --forceExit"
   },
+  "keywords": [
+    "service-desk",
+    "tickets",
+    "express",
+    "mysql"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
-    "mysql2": "^3.11.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.2.0",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
 }
